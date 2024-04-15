@@ -25,7 +25,7 @@
    - **For Instruction-Tuning**: [LLaVA-Med Instruct Dataset](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
    - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
    - **Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training.
-
+  [Stage3 Image](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
 ## Web Launch
 
 3. **Launch the Web Interface**
@@ -62,8 +62,16 @@
 
 ## Related Projects
 6.**Evaluation**
+## Evaluation
+
+The evaluation process involves running the model on multiple GPUs and combining the results. Below are the detailed steps and commands:
+
+```bash
+# Set the number of chunks and GPUs
 CHUNKS=2
 GPUS=(0 1)
+
+# Run inference on each GPU
 for IDX in {0..1}; do
     GPU_IDX=${GPUS[$IDX]}
     PORT=$((${GPUS[$IDX]} + 29500))
@@ -79,11 +87,14 @@ for IDX in {0..1}; do
         --conv-mode simple &
 done
 
+# Combine JSONL results into one file
 cat ./test_llava-13b-chunk2_{0..1}.jsonl > ./radvqa.jsonl
+
+# Run evaluation
 python run_eval.py \
     --gt ./3vqa/test_rad.json \
     --pred ./radvqa.jsonl \
-    --output  ./data_RAD/wrong_answers.json
+    --output ./data_RAD/wrong_answers.json
 
 
 7. **Acknowledgements**
