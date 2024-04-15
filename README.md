@@ -61,8 +61,32 @@
    | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-stablelm-1.6b) |
 
 ## Related Projects
+6.**Evaluation**
+CHUNKS=2
+GPUS=(0 1)
+for IDX in {0..1}; do
+    GPU_IDX=${GPUS[$IDX]}
+    PORT=$((${GPUS[$IDX]} + 29500))
+    MASTER_PORT_ENV="MASTER_PORT=$PORT"
+    deepspeed --include localhost:$GPU_IDX --master_port $PORT model_vqa_med.py \
+        --model-path your_model_path \
+        --question-file ./test_rad.json \
+        --image-folder ./3vqa/images \
+        --answers-file ./test_llava-13b-chunk${CHUNKS}_${IDX}.jsonl \
+        --temperature 0 \
+        --num-chunks $CHUNKS \
+        --chunk-idx $IDX \
+        --conv-mode simple &
+done
 
-6. **Acknowledgements**
+cat ./test_llava-13b-chunk2_{0..1}.jsonl > ./radvqa.jsonl
+python run_eval.py \
+    --gt ./3vqa/test_rad.json \
+    --pred ./radvqa.jsonl \
+    --output  ./data_RAD/wrong_answers.json
+
+
+7. **Acknowledgements**
    Special thanks to these foundational works:
    - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
    - [LLaVA-Med](https://github.com/microsoft/LLaVA-Med)
