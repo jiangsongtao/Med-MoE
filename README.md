@@ -26,9 +26,9 @@
 **Prepare the Datasets**
 
    Utilize the LLaVA-Med Datasets for training:
-   - **For Pretrained Models**: [LLaVA-Med Alignment Dataset](https://drive.google.com/file/d/1cV_Y30VbMI9R9KcuBd_EiK738kDwcxxA/view?usp=drive_link)
+   - **For Pretrained Models**: [LLaVA-Med Alignment Dataset](https://drive.google.com/file/d/1cV_Y30VbMI9R9KcuBd_EiK738kDwcxxA/view?usp=sharing)
    - **For Instruction-Tuning**: [LLaVA-Med Instruct Dataset](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
-   - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
+   - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=sharing)
    - **Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training. [Stage3 ImageData](https://drive.google.com/file/d/1l9hnxa2Y3D8rhNLldtCQ0vGPhsiWH_Su/view?usp=sharing)
 
 ## Web Launch
