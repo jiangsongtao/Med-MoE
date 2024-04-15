@@ -60,9 +60,8 @@
    | MoE-LLaVA-1.6B×4-Top2       | 2.0B                 | [Tinymed-phi2](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-phi2)       |
    | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-stablelm-1.6b) |
 
-## Related Projects
-6.**Evaluation**
-## Evaluation
+
+6.## Evaluation
 
 The evaluation process involves running the model on multiple GPUs and combining the results. Below are the detailed steps and commands:
 
