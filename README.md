@@ -102,7 +102,7 @@ python run_eval.py \
     --output ./data_RAD/wrong_answers.json
 ```
 
-##Acknowledgements
+## Acknowledgements
 
 Special thanks to these foundational works:
 - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
