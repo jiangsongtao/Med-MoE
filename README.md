@@ -1,7 +1,8 @@
 # TinyMed
 
 **TinyMed** is a cost-efficient Machine Learning Large Language Model (MLLM) developed for the medical domain. Inspired by MoE-LLaVA, this model significantly reduces parameter count while matching or exceeding the capabilities of larger 7B models.
-![Uploading image.png…]()
+![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/fbe974db-7d2b-47db-ae93-a3a71f9979a5)
+
 
 ## Environment Setup
 
