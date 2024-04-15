@@ -1,6 +1,7 @@
 # TinyMed
 
 **TinyMed** is a cost-efficient Machine Learning Large Language Model (MLLM) developed for the medical domain. Inspired by MoE-LLaVA, this model significantly reduces parameter count while matching or exceeding the capabilities of larger 7B models.
+![Uploading image.png…]()
 
 ## Environment Setup
 
@@ -20,7 +21,7 @@
    Utilize the LLaVA-Med Datasets for training:
    - **For Pretrained Models**: [LLaVA-Med Alignment Dataset](https://drive.google.com/file/d/1cV_Y30VbMI9R9KcuBd_EiK738kDwcxxA/view?usp=drive_link)
    - **For Instruction-Tuning**: [LLaVA-Med Instruct Dataset](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
-   - **For MoE-Tuning Stage**: [Training JSONL](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
+   - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
    - **Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training.
 
 ## Web Launch
