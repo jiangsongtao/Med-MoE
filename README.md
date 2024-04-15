@@ -8,7 +8,7 @@
 
 ## Environment Setup
 
-1. **Prepare the Environment**
+**Prepare the Environment**
 
    Clone and navigate to the TinyMed project directory, then set up your environment:
    ```bash
@@ -23,7 +23,7 @@
 
 ## Training
 
-2. **Prepare the Datasets**
+**Prepare the Datasets**
 
    Utilize the LLaVA-Med Datasets for training:
    - **For Pretrained Models**: [LLaVA-Med Alignment Dataset](https://drive.google.com/file/d/1cV_Y30VbMI9R9KcuBd_EiK738kDwcxxA/view?usp=drive_link)
@@ -33,7 +33,7 @@
 
 ## Web Launch
 
-3. **Launch the Web Interface**
+**Launch the Web Interface**
 
    Use DeepSpeed to start the Gradio web server:
    - **Phi2 Model**:
@@ -47,7 +47,7 @@
 
 ## CLI Inference
 
-4. **Command Line Inference**
+ **Command Line Inference**
    Execute models from the command line:
    - **Phi2 Model**:
      ```bash
@@ -60,14 +60,14 @@
 
 ## Model Zoo
 
-5. **Available Models**
+**Available Models**
    | Model                       | Activated Parameters | Link                                                  |
    | --------------------------- | -------------------- | ----------------------------------------------------- |
    | MoE-LLaVA-1.6B×4-Top2       | 2.0B                 | [Tinymed-phi2](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-phi2)       |
    | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-stablelm-1.6b) |
 
 
-6. **Evaluation**
+## Evaluation
 
 The evaluation process involves running the model on multiple GPUs and combining the results. Below are the detailed steps and commands:
 
@@ -102,7 +102,7 @@ python run_eval.py \
     --output ./data_RAD/wrong_answers.json
 ```
 
-7. **Acknowledgements**
+##Acknowledgements
 
 Special thanks to these foundational works:
 - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
