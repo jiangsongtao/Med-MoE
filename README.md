@@ -1,13 +1,15 @@
 # TinyMed
+
 ![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/4d0e388e-de8b-4fad-a0de-6962c5fe19b8)
 
 **TinyMed** is a cost-efficient Machine Learning Large Language Model (MLLM) developed for the medical domain. Inspired by MoE-LLaVA, this model significantly reduces parameter count while matching or exceeding the capabilities of larger 7B models.
-![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/fbe974db-7d2b-47db-ae93-a3a71f9979a5)
 
+![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/fbe974db-7d2b-47db-ae93-a3a71f9979a5)
 
 ## Environment Setup
 
 1. **Prepare the Environment**
+
    Clone and navigate to the TinyMed project directory, then set up your environment:
    ```bash
    cd TinyMed
@@ -17,18 +19,22 @@
    pip install -e .
    pip install -e ".[train]"
    pip install flash-attn --no-build-isolation
+   ```
+
 ## Training
 
 2. **Prepare the Datasets**
+
    Utilize the LLaVA-Med Datasets for training:
    - **For Pretrained Models**: [LLaVA-Med Alignment Dataset](https://drive.google.com/file/d/1cV_Y30VbMI9R9KcuBd_EiK738kDwcxxA/view?usp=drive_link)
    - **For Instruction-Tuning**: [LLaVA-Med Instruct Dataset](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
    - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
    - **Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training.
-  [Stage3 Image](https://drive.google.com/file/d/1Dzop-vqsSuieuXFOZHxbkHIfLR9lePa-/view?usp=drive_link)
+
 ## Web Launch
 
 3. **Launch the Web Interface**
+
    Use DeepSpeed to start the Gradio web server:
    - **Phi2 Model**:
      ```bash
@@ -61,7 +67,7 @@
    | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-stablelm-1.6b) |
 
 
-6.## Evaluation
+6. **Evaluation**
 
 The evaluation process involves running the model on multiple GPUs and combining the results. Below are the detailed steps and commands:
 
@@ -94,9 +100,11 @@ python run_eval.py \
     --gt ./3vqa/test_rad.json \
     --pred ./radvqa.jsonl \
     --output ./data_RAD/wrong_answers.json
-
+```
 
 7. **Acknowledgements**
-   Special thanks to these foundational works:
-   - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
-   - [LLaVA-Med](https://github.com/microsoft/LLaVA-Med)
+
+Special thanks to these foundational works:
+- [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
+- [LLaVA-Med](https://github.com/microsoft/LLaVA-Med)
+```
