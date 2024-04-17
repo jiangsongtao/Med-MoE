@@ -1,4 +1,5 @@
 # TinyMed
+Our paper's link is [arxiv](https://arxiv.org/pdf/2401.15947.pdf)
 
 ![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/4d0e388e-de8b-4fad-a0de-6962c5fe19b8)
 
