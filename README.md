@@ -1,5 +1,5 @@
 # TinyMed
-Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Vision-Language Models](https://arxiv.org/pdf/2401.15947.pdf)
+Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Vision-Language Models](https://arxiv.org/pdf/2404.10237.pdf)
 
 ![image](https://github.com/jiangsongtao/TinyMed/assets/43131870/4d0e388e-de8b-4fad-a0de-6962c5fe19b8)
 
