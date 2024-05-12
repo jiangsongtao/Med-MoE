@@ -32,7 +32,7 @@ Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Visi
    - **For Pretrained and SFT Image**:wget https://hanoverprod.z21.web.core.windows.net/med_llava/llava_med_image_urls.jsonl and python download_image.py(Don't forget to replace your path)
    - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1mf3lyW7CbfCowGC58gXsam-3dPwIenbJ/view?usp=sharing)
    - **MoE-Tuning Stage Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training. [Stage3 ImageData](https://drive.google.com/file/d/1l9hnxa2Y3D8rhNLldtCQ0vGPhsiWH_Su/view?usp=sharing)
-
+Test.json for VQA:https://drive.google.com/file/d/1pyGsm8G0Gig63DAnOdLuUn3IyxrztWtR/view?usp=sharing
 ## Web Launch
 
 **Launch the Web Interface**
