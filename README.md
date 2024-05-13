@@ -110,8 +110,6 @@ Special thanks to these foundational works:
 - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
 - [LLaVA-Med](https://github.com/microsoft/LLaVA-Med)
 ```
-If you find our work useful for your research and applications, please cite using this BibTeX:
-
 @misc{jiang2024moetinymed,
       title={MoE-TinyMed: Mixture of Experts for Tiny Medical Large Vision-Language Models}, 
       author={Songtao Jiang and Tuo Zheng and Yan Zhang and Yeying Jin and Zuozhu Liu},
