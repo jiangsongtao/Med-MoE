@@ -39,9 +39,7 @@ if a == '4' and int(b) >= 36:
 if a == '4' and int(b) >= 37:
     from moellava.model.language_model.llava_qwen1_5_moe import EvalMoELLaVAQwen1_5ForCausalLM
     from moellava.model.language_model.llava_qwen1_5 import LlavaQwen1_5ForCausalLM
-if a == '4' and int(b) >= 39:
-    from moellava.model.language_model.llava_gemma import LlavaGemmaForCausalLM
-    from moellava.model.language_model.llava_gemma_moe import EvalMoELLaVAGemmaForCausalLM
+
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAndBytesConfig, GenerationConfig
 import torch
@@ -113,9 +111,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                                 capacity_factor_eval =2,
                             )             
                     
-            elif 'gemma' in model_base.lower():
-                model = LlavaGemmaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
-                model.config.eos_token_id = tokenizer.eos_token_id
+        
             else:
                 model = LlavaLlamaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
             # =============================================================================================
@@ -183,10 +179,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
                 model = EvalMoELLaVAStablelmForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True,trust_remote_code=True,config=lora_cfg_pretrained, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
-            elif 'gemma' in model_name.lower():
-                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
-                model = EvalMoELLaVAGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
-                model.config.eos_token_id = tokenizer.eos_token_id
+        
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False,trust_remote_code=True, padding_side=padding_side)
                 model = EvalMoELLaVALlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
@@ -319,23 +312,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
 
                 model.generation_config.do_sample = False  # use greedy decoding
                 model.generation_config.repetition_penalty = 1.0  # disable repetition penalty
-            elif 'gemma' in model_name.lower():
-                tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False, padding_side=padding_side)
-                cfg_pretrained = LlavaGemmaConfig.from_pretrained(model_path)
-                if getattr(cfg_pretrained, 'moe', {}).get('moe_enable', False):
-                    model = EvalMoELLaVAMiniCPMForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
-                    import deepspeed
-                    deepspeed.init_distributed(dist_backend='nccl')
-                    # Initialize the DeepSpeed-Inference engine
-                    ds_engine = deepspeed.init_inference(model,
-                                                         # mp_size=2,
-                                                         # dtype=torch.half,
-                                                         checkpoint=None,
-                                                         replace_with_kernel_inject=False)
-                    model = ds_engine.module
-                else:
-                    model = LlavaGemmaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
-                model.config.eos_token_id = tokenizer.eos_token_id
+        
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False, padding_side=padding_side)
                 cfg_pretrained = AutoConfig.from_pretrained(model_path)
@@ -425,24 +402,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 else:
                     model = LlavaPhiForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
-            elif 'gemma' in model_name.lower():
-                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
-                # print(tokenizer)
-                if 'moe' in model_name.lower():
-                    assert not load_8bit and not load_4bit  # FIXME
-                    model = EvalMoELLaVAGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
-                    import deepspeed
-                    deepspeed.init_distributed(dist_backend='nccl')
-                    # Initialize the DeepSpeed-Inference engine
-                    ds_engine = deepspeed.init_inference(model,
-                                                         # mp_size=2,
-                                                         # dtype=torch.half,
-                                                         checkpoint=None,
-                                                         replace_with_kernel_inject=False)
-                    model = ds_engine.module
-                else:
-                    model = LlavaGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
-                model.config.eos_token_id = tokenizer.eos_token_id
+            
             elif 'qwen' in model_name.lower() and '1.5' in model_name.lower():
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
                 # print(tokenizer)
