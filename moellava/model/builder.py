@@ -12,16 +12,17 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-
 import os
 import warnings
 import shutil
-
+from peft import PeftModel,AutoPeftModel,AutoPeftModelForCausalLM
 from moellava.model.language_model.llava_qwen_moe import EvalMoELLaVAQWenForCausalLM
 from moellava.model.language_model.llava_qwen import LlavaQWenForCausalLM
+from deepspeed.moe.layer import MoE
 
 from moellava.model.language_model.llava_llama_moe import EvalMoELLaVALlamaForCausalLM
 from moellava.model.language_model.llava_llama import LlavaLlamaForCausalLM
+from moellava.model.language_model.mixture_of_experts import HeirarchicalMoE
 
 import transformers
 a, b, c = transformers.__version__.split('.')[:3]
@@ -38,6 +39,9 @@ if a == '4' and int(b) >= 36:
 if a == '4' and int(b) >= 37:
     from moellava.model.language_model.llava_qwen1_5_moe import EvalMoELLaVAQwen1_5ForCausalLM
     from moellava.model.language_model.llava_qwen1_5 import LlavaQwen1_5ForCausalLM
+if a == '4' and int(b) >= 39:
+    from moellava.model.language_model.llava_gemma import LlavaGemmaForCausalLM
+    from moellava.model.language_model.llava_gemma_moe import EvalMoELLaVAGemmaForCausalLM
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAndBytesConfig, GenerationConfig
 import torch
@@ -71,7 +75,8 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
         # Load LLaVA model
         if 'lora' in model_name.lower() and 'moe' not in model_name.lower() and model_base is None:
             warnings.warn('There is `lora` in model name but no `model_base` is provided. If you are loading a LoRA model, please provide the `model_base` argument. Detailed instruction: https://github.com/haotian-liu/LLaVA#launch-a-model-worker-lora-weights-unmerged.')
-        if 'lora' in model_name.lower() and 'moe' not in model_name.lower() and model_base is not None:
+        #if 'lora' in model_name.lower() and 'moe' not in model_name.lower() and model_base is not None:
+        if 'lora' in model_name.lower() and model_base is not None:
             lora_cfg_pretrained = AutoConfig.from_pretrained(model_path)
             tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False, padding_side=padding_side)
             print('Loading LLaVA from base model...')
@@ -96,6 +101,20 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 model.config.eos_token_id = tokenizer.eos_token_id
             elif 'stablelm' in model_base.lower():
                 model = LlavaStablelmForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
+                model.config.eos_token_id = tokenizer.eos_token_id
+                print('changing stablelm to moe')       
+                moe_layers_idx=list(range(24))[::2]
+                for  layer_num in  moe_layers_idx:
+                    model.model.layers[layer_num].mlp = HeirarchicalMoE(
+                                dim = 2048,
+                                mlp=model.model.layers[layer_num].mlp,
+                                num_experts=(3,3),
+                                capacity_factor_train =1.5,
+                                capacity_factor_eval =2,
+                            )             
+                    
+            elif 'gemma' in model_base.lower():
+                model = LlavaGemmaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
             else:
                 model = LlavaLlamaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
@@ -125,9 +144,9 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 non_lora_trainables = {(k[6:] if k.startswith('model.') else k): v for k, v in non_lora_trainables.items()}
             model.load_state_dict(non_lora_trainables, strict=False)
 
-            from peft import PeftModel
+            import peft
             print('Loading LoRA weights...')
-            model = PeftModel.from_pretrained(model, model_path)
+            model = peft.PeftModel.from_pretrained(model, model_path)
             print('Merging LoRA weights...')
             model = model.merge_and_unload()
             print('Model is loaded...')
@@ -160,11 +179,16 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 model.config.eos_token_id = tokenizer.eos_token_id
             elif 'stablelm' in model_name.lower():
                 from moellava.model.language_model.stablelm.tokenization_arcade100k import Arcade100kTokenizer
-                tokenizer = Arcade100kTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
-                model = EvalMoELLaVAStablelmForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
+                #tokenizer = Arcade100kTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                model = EvalMoELLaVAStablelmForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True,trust_remote_code=True,config=lora_cfg_pretrained, **kwargs)
+                model.config.eos_token_id = tokenizer.eos_token_id
+            elif 'gemma' in model_name.lower():
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                model = EvalMoELLaVAGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
             else:
-                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False,trust_remote_code=True, padding_side=padding_side)
                 model = EvalMoELLaVALlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
             if not merge:
                 import deepspeed
@@ -208,7 +232,9 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 if getattr(cfg_pretrained, 'moe', {}).get('moe_enable', False):
                     model = EvalMoELLaVAPhiForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
                     import deepspeed
-                    deepspeed.init_distributed(dist_backend='nccl')
+                    #deepspeed.init_distributed(dist_backend='nccl')
+                    deepspeed.init_distributed(dist_backend='nccl', port=29501)
+
                     # Initialize the DeepSpeed-Inference engine
                     ds_engine = deepspeed.init_inference(model,
                                                          # mp_size=2,
@@ -293,6 +319,23 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
 
                 model.generation_config.do_sample = False  # use greedy decoding
                 model.generation_config.repetition_penalty = 1.0  # disable repetition penalty
+            elif 'gemma' in model_name.lower():
+                tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False, padding_side=padding_side)
+                cfg_pretrained = LlavaGemmaConfig.from_pretrained(model_path)
+                if getattr(cfg_pretrained, 'moe', {}).get('moe_enable', False):
+                    model = EvalMoELLaVAMiniCPMForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
+                    import deepspeed
+                    deepspeed.init_distributed(dist_backend='nccl')
+                    # Initialize the DeepSpeed-Inference engine
+                    ds_engine = deepspeed.init_inference(model,
+                                                         # mp_size=2,
+                                                         # dtype=torch.half,
+                                                         checkpoint=None,
+                                                         replace_with_kernel_inject=False)
+                    model = ds_engine.module
+                else:
+                    model = LlavaGemmaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
+                model.config.eos_token_id = tokenizer.eos_token_id
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False, padding_side=padding_side)
                 cfg_pretrained = AutoConfig.from_pretrained(model_path)
@@ -368,7 +411,10 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     assert not load_8bit and not load_4bit  # FIXME
                     model = EvalMoELLaVAPhiForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                     import deepspeed
+                   
                     deepspeed.init_distributed(dist_backend='nccl')
+                   
+
                     # Initialize the DeepSpeed-Inference engine
                     ds_engine = deepspeed.init_inference(model,
                                                          # mp_size=2,
@@ -378,6 +424,24 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     model = ds_engine.module
                 else:
                     model = LlavaPhiForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
+                model.config.eos_token_id = tokenizer.eos_token_id
+            elif 'gemma' in model_name.lower():
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                # print(tokenizer)
+                if 'moe' in model_name.lower():
+                    assert not load_8bit and not load_4bit  # FIXME
+                    model = EvalMoELLaVAGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
+                    import deepspeed
+                    deepspeed.init_distributed(dist_backend='nccl')
+                    # Initialize the DeepSpeed-Inference engine
+                    ds_engine = deepspeed.init_inference(model,
+                                                         # mp_size=2,
+                                                         # dtype=torch.half,
+                                                         checkpoint=None,
+                                                         replace_with_kernel_inject=False)
+                    model = ds_engine.module
+                else:
+                    model = LlavaGemmaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
             elif 'qwen' in model_name.lower() and '1.5' in model_name.lower():
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
@@ -416,12 +480,17 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     model = LlavaMiniCPMForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 model.config.eos_token_id = tokenizer.eos_token_id
             elif 'stablelm' in model_name.lower():
+                print("aaaaa")
                 from moellava.model.language_model.stablelm.tokenization_arcade100k import Arcade100kTokenizer
-                tokenizer = Arcade100kTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                #tokenizer = Arcade100kTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False,trust_remote_code=True, padding_side=padding_side)
                 # print(tokenizer)
                 if 'moe' in model_name.lower():
+                    print("use moe")
                     assert not load_8bit and not load_4bit  # FIXME
-                    model = EvalMoELLaVAStablelmForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
+                    model = EvalMoELLaVAStablelmForCausalLM.from_pretrained(model_path,low_cpu_mem_usage=True, **kwargs)
+                    #model = AutoPeftModelForCausalLM.from_pretrained(model_path)
+
                     import deepspeed
                     deepspeed.init_distributed(dist_backend='nccl')
                     # Initialize the DeepSpeed-Inference engine
@@ -434,6 +503,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 else:
                     model = LlavaStablelmForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 # model.config.eos_token_id = tokenizer.eos_token_id
+            
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, padding_side=padding_side)
                 if 'moe' in model_name.lower():
