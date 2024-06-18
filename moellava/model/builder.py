@@ -22,7 +22,6 @@ from deepspeed.moe.layer import MoE
 
 from moellava.model.language_model.llava_llama_moe import EvalMoELLaVALlamaForCausalLM
 from moellava.model.language_model.llava_llama import LlavaLlamaForCausalLM
-from moellava.model.language_model.mixture_of_experts import HeirarchicalMoE
 
 import transformers
 a, b, c = transformers.__version__.split('.')[:3]
