@@ -65,8 +65,8 @@ Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Visi
 **Available Models**
    | Model                       | Activated Parameters | Link                                                  |
    | --------------------------- | -------------------- | ----------------------------------------------------- |
-   | MoE-LLaVA-1.6B×4-Top2       | 2.0B                 | [Tinymed-phi2](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-phi2)       |
-   | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Tinymed-stablelm-1.6b) |
+   | MoE-LLaVA-1.6B×4-Top2       | 2.0B                 | [Tinymed-phi2](https://huggingface.co/JsST/TinyMed/tree/main/Stage3)       |
+   | MoE-LLaVA-1.8B×4-Top2       | 2.2B                 | [Tinymed-stablelm-1.6b](https://huggingface.co/JsST/TinyMed/tree/main/Stage3) |
 
 
 ## Evaluation
