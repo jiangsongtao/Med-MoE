@@ -260,7 +260,19 @@ conv_vicuna_v1 = Conversation(
     sep=" ",
     sep2="</s>",
 )
-
+simple_conv_med = Conversation(
+    system="You are LLaVA-Med, a large language and vision assistant trained by a group of researchers at Microsoft, based on the general domain LLaVA architecture."
+           "You are designed to assist human with a variety of medical and clinical research tasks using natural language."
+           "Follow the instructions carefully.",
+    roles=("Human", "Assistant"),
+    messages=(
+        ("Human", "Hi!"),
+        ("Assistant", "Hi there!  How can I help you today?\n")
+    ),
+    offset=2,
+    sep_style=SeparatorStyle.SINGLE,
+    sep="###",
+)
 conv_mistral = Conversation(
     system="A chat between a curious user and an artificial intelligence assistant. "
     "The assistant gives helpful, detailed, and polite answers to the user's questions.",
@@ -405,7 +417,16 @@ conv_llava_v1 = Conversation(
     sep=" ",
     sep2="</s>",
 )
-
+conv_mistral_instruct = Conversation(
+    system="",
+    roles=("USER", "ASSISTANT"),
+    version="llama_v2",
+    messages=(),
+    offset=0,
+    sep_style=SeparatorStyle.LLAMA_2,
+    sep="",
+    sep2="</s>",
+)
 conv_llava_v1_mmtag = Conversation(
     system="A chat between a curious user and an artificial intelligence assistant. "
            "The assistant is able to understand the visual content that the user provides, and assist the user with a variety of tasks using natural language."
@@ -432,7 +453,7 @@ conv_templates = {
     "stablelm": conv_stablelm,
     "vicuna_v1": conv_vicuna_v1,
     "llama_2": conv_llama_2,
-
+    'simple':simple_conv_med,
     "plain": conv_llava_plain,
     "v0_plain": conv_llava_plain,
     "llava_v0": conv_llava_v0,
@@ -440,7 +461,6 @@ conv_templates = {
     "llava_v1": conv_llava_v1,
     "v1_mmtag": conv_llava_v1_mmtag,
     "llava_llama_2": conv_llava_llama_2,
-
     "mpt": conv_mpt,
 }
 
