@@ -48,7 +48,7 @@
    Use DeepSpeed to start the Gradio web server:
    - **Phi2 Model**:
      ```bash
-     deepspeed --include localhost:0 moellava/serve/gradio_web_server.py --model-path "./MedMoE-phi2"
+     deepspeed --include localhost:0 moellava/serve/gradio_web_server.py --model-path "./MedMoE-phi2"
      ```
    - **StableLM Model**:
      ```bash
