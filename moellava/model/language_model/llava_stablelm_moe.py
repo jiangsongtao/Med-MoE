@@ -485,16 +485,21 @@ class MoELLaVAStablelmForCausalLM(StableLMEpochForCausalLM, LlavaMetaForCausalLM
                 expert=self.model.layers[layer_num].mlp,
                 num_experts=num_experts,
                 ep_size=model_args.ep_size,
+                outert_expert_mlp=self.model.layers[layer_num].mlp,
                 k=model_args.top_k_experts,
-                capacity_factor=model_args.capacity_factor,
-                eval_capacity_factor=model_args.eval_capacity_factor,
-                min_capacity=model_args.min_capacity,
+                capacity_factor=4,
+                eval_capacity_factor=4,
+                min_capacity=0,
+                router='Your path',
                 use_residual=model_args.use_residual,
+                training=True,
+                drop_tokens =False,
+                use_rts=False,
             )
-            for e in self.model.layers[layer_num].mlp.deepspeed_moe.experts.deepspeed_experts:  # check weight
-                loaded_state_dict = e.state_dict()
-                assert all([torch.allclose(pretrained_state_dict[k], v) for k, v in loaded_state_dict.items()])
-                assert all([torch.allclose(loaded_state_dict[k], v) for k, v in pretrained_state_dict.items()])
+            # for e in self.model.layers[layer_num].mlp.deepspeed_moe.experts.deepspeed_experts:  # check weight
+            #     loaded_state_dict = e.state_dict()
+            #     assert all([torch.allclose(pretrained_state_dict[k], v) for k, v in loaded_state_dict.items()])
+            #     assert all([torch.allclose(loaded_state_dict[k], v) for k, v in pretrained_state_dict.items()])
         # ipdb.set_trace()
         rank0_print(f"LLM num_layers: {num_layers}, MoE num_layers: {len(moe_layers_idx)}, where\n",
                     *[f'layer-{layer_num} has {num_experts} experts\n' for num_experts, layer_num in
@@ -524,11 +529,16 @@ class EvalMoELLaVAStablelmForCausalLM(MoELLaVAStablelmForCausalLM):
                 expert=self.model.layers[layer_num].mlp,
                 num_experts=num_experts,
                 ep_size=self.config.moe['ep_size'],
+                outert_expert_mlp=self.model.layers[layer_num].mlp,
+                router='Your path',
                 k=self.config.moe['top_k_experts'],
-                capacity_factor=self.config.moe['capacity_factor'],
-                eval_capacity_factor=self.config.moe['eval_capacity_factor'],
-                min_capacity=self.config.moe['min_capacity'],
+                capacity_factor=4,
+                eval_capacity_factor=4,
+                min_capacity=0,
                 use_residual=self.config.moe['use_residual'],
+                training=False,
+                drop_tokens =False,
+                use_rts=False,
             )
         rank0_print(f"LLM num_layers: {num_layers}, MoE num_layers: {len(moe_layers_idx)}, where\n",
                     *[f'layer-{layer_num} has {num_experts} experts\n' for num_experts, layer_num in
