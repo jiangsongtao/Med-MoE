@@ -1,5 +1,4 @@
-<img src="https://github.com/jiangsongtao/TinyMed/assets/43131870/4d0e388e-de8b-4fad-a0de-6962c5fe19b8" width="400">
-
+<img src="https://github.com/jiangsongtao/TinyMed/assets/43131870/bd7a9801-f94f-485b-9186-8d83620d0bc2" width="400">
 ## Med-MoE
 
 **Med-MoE** is a novel and lightweight framework designed to handle both discriminative and generative multimodal medical tasks. It employs a three-step learning process: aligning multimodal medical images with LLM tokens, instruction tuning with a trainable router for expert selection, and domain-specific MoE tuning. Our model stands out by incorporating highly specialized domain-specific experts, significantly reducing the required model parameters by 30%-50% while achieving superior or on-par performance compared to state-of-the-art models. This expert specialization and efficiency make Med-MoE highly suitable for resource-constrained clinical settings.
@@ -10,9 +9,13 @@
 
 **Prepare the Environment**
 
-   Clone and navigate to the TinyMed project directory, then set up your environment:
+1. Clone and navigate to the TinyMed project directory:
    ```bash
    cd TinyMed
+   ```
+
+2. Set up your environment:
+   ```bash
    conda create -n tinymed python=3.10 -y
    conda activate tinymed
    pip install --upgrade pip
@@ -20,8 +23,10 @@
    pip install -e ".[train]"
    pip install flash-attn --no-build-isolation
    ```
-replacing the default MoE with our provided version
-Please download the domain-specific router provided by us or trained by yourself, and replace its path in the moellava/model/language_model/llava_stablelm_moe.py file.
+
+3. Replace the default MoE with our provided version.
+
+4. Please download the domain-specific router provided by us or trained by yourself, and replace its path in the `moellava/model/language_model/llava_stablelm_moe.py` file.
 
 ## Training
 
