@@ -1,4 +1,4 @@
-<img src="https://github.com/jiangsongtao/TinyMed/assets/43131870/bd7a9801-f94f-485b-9186-8d83620d0bc2" width="400">
+![Med-MoE](https://github.com/jiangsongtao/TinyMed/assets/43131870/e5527da1-c825-478d-8e8a-ebe588dc628b)
 
 **Med-MoE** is a novel and lightweight framework designed to handle both discriminative and generative multimodal medical tasks. It employs a three-step learning process: aligning multimodal medical images with LLM tokens, instruction tuning with a trainable router for expert selection, and domain-specific MoE tuning. Our model stands out by incorporating highly specialized domain-specific experts, significantly reducing the required model parameters by 30%-50% while achieving superior or on-par performance compared to state-of-the-art models. This expert specialization and efficiency make Med-MoE highly suitable for resource-constrained clinical settings.
 <img width="515" alt="model" src="https://github.com/jiangsongtao/TinyMed/assets/43131870/21a9246d-698f-492f-ab6f-351cf97b055c">
