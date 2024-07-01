@@ -1,3 +1,5 @@
+Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Vision-Language Models](https://arxiv.org/pdf/2404.10237.pdf)
+
 <img width="600" alt="model" src="https://github.com/jiangsongtao/TinyMed/assets/43131870/956aa268-1c75-44b3-938f-40fbbd8a53b7">
 
 
@@ -116,3 +118,12 @@ Special thanks to these foundational works:
 - [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA)
 - [LLaVA-Med](https://github.com/microsoft/LLaVA-Med)
 ```
+@misc{jiang2024medmoemixturedomainspecificexperts,
+      title={Med-MoE: Mixture of Domain-Specific Experts for Lightweight Medical Vision-Language Models}, 
+      author={Songtao Jiang and Tuo Zheng and Yan Zhang and Yeying Jin and Li Yuan and Zuozhu Liu},
+      year={2024},
+      eprint={2404.10237},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2404.10237}, 
+}
