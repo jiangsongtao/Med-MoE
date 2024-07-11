@@ -1,4 +1,4 @@
-Our paper's link is [MoE-TinyMed: Mixture of Experts for Tiny Medical Large Vision-Language Models](https://arxiv.org/pdf/2404.10237.pdf)
+Our paper's link is [Med-MoE: Mixture of Domain-Specific Experts for Lightweight Medical Vision-Language Models](https://arxiv.org/pdf/2404.10237.pdf)
 
 <img width="600" alt="model" src="https://github.com/jiangsongtao/TinyMed/assets/43131870/956aa268-1c75-44b3-938f-40fbbd8a53b7">
 
