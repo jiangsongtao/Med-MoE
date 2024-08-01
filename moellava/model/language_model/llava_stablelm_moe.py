@@ -495,7 +495,7 @@ class MoELLaVAStablelmForCausalLM(StableLMEpochForCausalLM, LlavaMetaForCausalLM
                 use_residual=model_args.use_residual,
                 training=True,
                 drop_tokens =False,
-                use_rts=False,
+
             )
             # for e in self.model.layers[layer_num].mlp.deepspeed_moe.experts.deepspeed_experts:  # check weight
             #     loaded_state_dict = e.state_dict()
