@@ -74,7 +74,9 @@ Our paper's link is [Med-MoE: Mixture of Domain-Specific Experts for Lightweight
 
 **Available Models**
 
-   We will release model weights within two weeks
+- **[Stage1](https://huggingface.co/JsST/TinyMed/tree/main/Stage1)**: stage1 models.
+- **[Stage2](https://huggingface.co/JsST/TinyMed/tree/main/Stage2)**: stage2 models.
+- **[Stage3](https://huggingface.co/JsST/Med-MoE/tree/main/stage3)**: stage3 models.
 
 
 ## Evaluation
