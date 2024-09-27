@@ -539,7 +539,6 @@ class EvalMoELLaVAStablelmForCausalLM(MoELLaVAStablelmForCausalLM):
                 use_residual=self.config.moe['use_residual'],
                 training=False,
                 drop_tokens =False,
-                use_rts=False,
             )
         rank0_print(f"LLM num_layers: {num_layers}, MoE num_layers: {len(moe_layers_idx)}, where\n",
                     *[f'layer-{layer_num} has {num_experts} experts\n' for num_experts, layer_num in
