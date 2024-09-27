@@ -1417,8 +1417,7 @@ def train():
             )
             tokenizer.add_special_tokens({'unk_token': '<|extra_0|>'})
         elif 'stablelm' in model_args.model_name_or_path.lower():
-            from moellava.model.language_model.stablelm.tokenization_arcade100k import Arcade100kTokenizer
-            tokenizer = Arcade100kTokenizer.from_pretrained(
+            tokenizer = transformers.AutoTokenizer.from_pretrained(
                 model_args.model_name_or_path,
                 cache_dir=training_args.cache_dir,
                 model_max_length=training_args.model_max_length,
