@@ -5,11 +5,11 @@ IMAGE_FOLDER="./3vqa/images"
 
 moe_mode="sparse"
 num_experts=4
-top_k_experts=2
-use_residual=True
-router_aux_loss_coef=0.01
+top_k_experts=1##top1+meta expert
+use_residual=False
+router_aux_loss_coef=0##no need for aux_loss
 cd ./MoE-LLaVA
-deepspeed --include=localhost:0,1 moellava/train/train_mem.py \
+deepspeed --include=localhost:0,1,2,3 moellava/train/train_mem.py \
     --moe_enable True --num_experts ${num_experts} --top_k_experts ${top_k_experts} --capacity_factor 1.5 \
     --moe_mode ${moe_mode} --use_residual ${use_residual} --router_aux_loss_coef ${router_aux_loss_coef} \
     --train_modules fc1 fc2 wg \
@@ -28,7 +28,7 @@ deepspeed --include=localhost:0,1 moellava/train/train_mem.py \
     --bf16 True \
     --output_dir ./MoE-LLaVA/checkpoints/llavaphi-2.7b-finetune-sft3epoch-moe3vqa-version3 \
     --num_train_epochs 9 \
-    --per_device_train_batch_size 4 \
+    --per_device_train_batch_size 8\
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 2 \
     --evaluation_strategy "no" \
