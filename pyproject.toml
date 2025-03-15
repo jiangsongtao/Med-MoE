@@ -13,14 +13,14 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
 ]
 dependencies = [
-    "torch==2.0.1", "torchvision==0.15.2",
     "transformers==4.37.0", "tokenizers==0.15.1", "sentencepiece==0.1.99", "shortuuid",
-    "accelerate==0.21.0", "peft==0.4.0", "bitsandbytes==0.41.0",
+    "accelerate==0.21.0", "peft==0.4.0", "bitsandbytes==0.45.3",
     "pydantic<2,>=1", "markdown2[all]", "numpy", "scikit-learn==1.2.2",
     "gradio==3.37.0", "gradio_client==0.7.0",
     "requests", "httpx==0.24.0", "uvicorn", "fastapi",
     "einops==0.6.1", "einops-exts==0.0.4", "timm==0.6.13",
-    "protobuf==4.24.4", "tiktoken==0.5.2", "openai==0.28.0", "openpyxl==3.1.2"
+    "protobuf==4.24.4", "tiktoken==0.5.2", "openai==0.28.0", "openpyxl==3.1.2",
+    "tabulate", "nltk"
 ]
 
 [project.optional-dependencies]

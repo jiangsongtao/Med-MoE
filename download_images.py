@@ -12,9 +12,9 @@ import urllib.request
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_path', type=str, default='./llava_med_image_urls.jsonl')
-parser.add_argument('--pmc_output_path', type=str, default='/data/pmc_articles/')
-parser.add_argument('--images_output_path', type=str, default='/data/images/')
+parser.add_argument('--input_path', type=str, default='./data/llava_med_image_urls.jsonl')
+parser.add_argument('--pmc_output_path', type=str, default='./data/pmc_articles/')
+parser.add_argument('--images_output_path', type=str, default='./data/images/')
 parser.add_argument('--remove_pmc', action='store_true', default=True, help='remove pmc articles after image extraction')
 parser.add_argument('--cpus', type=int, default=-1, help='number of cpus to use in multiprocessing (default: all)')
 args = parser.parse_args()

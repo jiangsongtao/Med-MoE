@@ -11,7 +11,7 @@ from moellava.model.builder import load_pretrained_model
 from moellava.utils import disable_torch_init
 from moellava.mm_utils import tokenizer_image_token, process_images, get_model_name_from_path
 from moellava.mm_utils import tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
-
+from transformers import AutoConfig
 from PIL import Image
 import math
 # os.environ.setdefault('MASTER_ADDR', '127.0.0.1')
@@ -79,19 +79,37 @@ prompt_pool = detail_describe_instructions + concise_describe_instructions
 prompt_pool = [ "Describe the following image in detail."]
 
 
-def patch_config(config):
+# def patch_config(config):
+#     patch_dict = {
+#         "use_mm_proj": True,
+#         "mm_vision_tower": "openai/clip-vit-large-patch14",
+#         "mm_hidden_size": 1024
+#     }
+
+#     cfg = AutoConfig.from_pretrained(config)
+#     if not hasattr(cfg, "mm_vision_tower"):
+#         print(f'`mm_vision_tower` not found in `{config}`, applying patch and save to disk.')
+#         for k, v in patch_dict.items():
+#             setattr(cfg, k, v)
+#         cfg.save_pretrained(config)
+def patch_config(config, image_tower):
+    # patch_dict = {
+    #     "use_mm_proj": True,
+    #     "mm_vision_tower": image_tower,  # 使用传入的参数
+    #     "mm_hidden_size": 1024
+    # }
     patch_dict = {
         "use_mm_proj": True,
-        "mm_vision_tower": "openai/clip-vit-large-patch14",
+        "mm_image_tower": image_tower,  # 修改为 mm_image_tower
         "mm_hidden_size": 1024
     }
 
     cfg = AutoConfig.from_pretrained(config)
-    if not hasattr(cfg, "mm_vision_tower"):
-        print(f'`mm_vision_tower` not found in `{config}`, applying patch and save to disk.')
-        for k, v in patch_dict.items():
-            setattr(cfg, k, v)
-        cfg.save_pretrained(config)
+    # 这里可以选择无论如何都更新，或者只在不存在时更新
+    print(f"Applying patch: setting mm_vision_tower to {image_tower} in config {config}")
+    for k, v in patch_dict.items():
+        setattr(cfg, k, v)
+    cfg.save_pretrained(config)
 
 
 
@@ -101,6 +119,9 @@ def eval_model(args):
     # Model
     disable_torch_init()
     model_path = os.path.expanduser(args.model_path)
+    if args.image_tower:
+        patch_config(model_path, args.image_tower)
+    
     model_name = get_model_name_from_path(model_path)
     print(model_name)
     tokenizer, model, image_processor, context_len = load_pretrained_model(model_path, args.model_base, model_name)
@@ -240,6 +261,8 @@ if __name__ == "__main__":
     parser.add_argument("--max_new_tokens", type=int, default=128)
     parser.add_argument("--single-pred-prompt", action="store_true")
     parser.add_argument("--return_gating_logit", type=str, default=None)
+    parser.add_argument("--image_tower", type=str, default="openai/clip-vit-large-patch14", 
+                    help="Identifier or local path for the image tower (CLIP model)")
     args = parser.parse_args()
 
     eval_model(args)

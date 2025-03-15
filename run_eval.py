@@ -2,7 +2,7 @@ import argparse
 import json
 import collections
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
-from eval_metrics.evaluate_metrics import calculate_exactmatch, calculate_f1score, bleu, calculate_appearance_with_normalization
+from moellava.eval.eval_metrics.evaluate_metrics import calculate_exactmatch, calculate_f1score, bleu, calculate_appearance_with_normalization
 from tabulate import tabulate
 
 import warnings

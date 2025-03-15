@@ -12,24 +12,27 @@ Our paper's link is [Med-MoE: Mixture of Domain-Specific Experts for Lightweight
 
 **Prepare the Environment**
 
-1. Clone and navigate to the TinyMed project directory:
+1. Clone and navigate to the Med-MoE project directory:
    ```bash
-   cd TinyMed
+   cd Med-MoE
    ```
 
 2. Set up your environment:
+  
+CUDA 12.4 is recommended. However, you can use another version as long as you update the corresponding package versions in your pymroject.poml file and adjust the PyTorch download lines accordingly.
    ```bash
-   conda create -n tinymed python=3.10 -y
-   conda activate tinymed
+   conda create -n Med-MoE python=3.10 -y
+   conda activate Med-MoE
    pip install --upgrade pip
    pip install -e .
    pip install -e ".[train]"
+   pip3 install torch torchvision torchaudio
    pip install flash-attn --no-build-isolation
    ```
 
-3. Replace the default MoE with our provided version.
+3. Please download the domain-specific router provided by us or trained by yourself, and replace its path in the `moellava/model/language_model/llava_stablelm_moe.py` file.
 
-4. Please download the domain-specific router provided by us or trained by yourself, and replace its path in the `moellava/model/language_model/llava_stablelm_moe.py` file.
+4. Download the corresponding Clip, Phi2, and Stablelm models into the current folder.
 
 ## Training
 
@@ -42,6 +45,42 @@ Our paper's link is [Med-MoE: Mixture of Domain-Specific Experts for Lightweight
    - **For MoE-Tuning Stage**: [Training Jsonl](https://drive.google.com/file/d/1mf3lyW7CbfCowGC58gXsam-3dPwIenbJ/view?usp=sharing)
    - **MoE-Tuning Stage Image Data**: Note that some images from LLaVA-Med are no longer available; these have been excluded from training. [Stage3 ImageData](https://drive.google.com/file/d/1l9hnxa2Y3D8rhNLldtCQ0vGPhsiWH_Su/view?usp=sharing)
    -**Test.json for VQA**:https://drive.google.com/file/d/1pyGsm8G0Gig63DAnOdLuUn3IyxrztWtR/view?usp=sharing
+  
+The data can be organized as shown below. You can modify it by editing [download_images.py](./download_images.py), but be sure to update the corresponding content in the scripts and elsewhere accordingly: 
+
+```
+Med-MoE
+├── moe
+├── moellava
+├── data
+│   ├── 3vqa
+│   │   ├── images
+│   │   │   ├── data_RAD
+│   │   │   ├── pvqa
+│   │   │   └── slake
+│   │   ├── test_pvqa.json
+│   │   ├── test_slake.json
+│   │   ├── test_rad.json
+│   │   └── train_all.json
+│   ├── alignment
+│   │   └── llava_med_alignment_500k_filter.json
+│   ├── images
+│   ├── instruct
+│   ├── pmc_articles
+│   └── llava_med_image_urls.jsonl
+│
+...
+```
+
+## Train
+
+Sequently run the scripts in `scripts/train_scripts`. The following one is an example for `Phi2`:
+
+```
+bash scripts/train_scripts/phi2/pretrain.sh
+bash scripts/train_scripts/phi2/finetune.sh
+bash scripts/train_scripts/phi2/finetune_moe_allvqa.sh
+```
      
 ## Web Launch
 
@@ -81,38 +120,9 @@ Our paper's link is [Med-MoE: Mixture of Domain-Specific Experts for Lightweight
 
 ## Evaluation
 
-The evaluation process involves running the model on multiple GPUs and combining the results. Below are the detailed steps and commands:
+The evaluation process involves running the model on multiple GPUs and combining the results. Modify [eval.sh](./eval.sh) accordingly and execute it with bash.
 
-```bash
-# Set the number of chunks and GPUs
-CHUNKS=2
-GPUS=(0 1)
 
-# Run inference on each GPU
-for IDX in {0..1}; do
-    GPU_IDX=${GPUS[$IDX]}
-    PORT=$((${GPUS[$IDX]} + 29500))
-    MASTER_PORT_ENV="MASTER_PORT=$PORT"
-    deepspeed --include localhost:$GPU_IDX --master_port $PORT model_vqa_med.py \
-        --model-path your_model_path \
-        --question-file ./test_rad.json \
-        --image-folder ./3vqa/images \
-        --answers-file ./test_llava-13b-chunk${CHUNKS}_${IDX}.jsonl \
-        --temperature 0 \
-        --num-chunks $CHUNKS \
-        --chunk-idx $IDX \
-        --conv-mode stablelm/phi2 &
-done
-
-# Combine JSONL results into one file
-cat ./test_llava-13b-chunk2_{0..1}.jsonl > ./radvqa.jsonl
-
-# Run evaluation
-python run_eval.py \
-    --gt ./3vqa/test_rad.json \
-    --pred ./radvqa.jsonl \
-    --output ./data_RAD/wrong_answers.json
-```
 
 ## Acknowledgements
 

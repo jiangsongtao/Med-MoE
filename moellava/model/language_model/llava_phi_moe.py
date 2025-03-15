@@ -27,7 +27,9 @@ from transformers.modeling_outputs import CausalLMOutputWithPast
 
 from ..llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
 
-from deepspeed.moe.layer import MoE
+# from deepspeed.moe.layer import MoE
+# Switch to the provided MoE
+from moe.layer import MoE
 from dataclasses import dataclass
 from typing import Optional, Tuple, Union, List
 import torch.nn as nn
